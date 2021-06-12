@@ -16,13 +16,13 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   integration:
+    name: integration
     # A strategy that defines different variations of an environment to run each job in.
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         node: [14]
     # The runners that the job will run on
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -52,14 +52,48 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
         
-      - name: Code coverage
-        uses: codecov/codecov-action@v1.0.12
-
       - name: Run build
         run: npm run build --if-present
-
-      - name: Deploy to Github pages
-        uses: peaceiris/actions-gh-pages@v3
+        
+      - name: Code coverage
+        uses: codecov/codecov-action@v1.0.12
+        
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          name: dist
+          path: dist
+
+  deployment:
+    name: deployment
+    needs: integration
+    # A strategy that defines different variations of an environment to run each job in.
+    strategy:
+      matrix:
+        node: [14]
+    # The runners that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: dist
+          path: dist
+          
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20.0.0
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./dist
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: AIzaSyCiPpc1hdw8eZ_RBhT8OUBUu4C-7VA1yas
+          PROJECT_ID: project-5720784476141069456
+
+        #${{ secrets.FIREBASE_TOKEN }}
