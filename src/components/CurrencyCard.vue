@@ -38,6 +38,7 @@
   import {unSubscribeSymbol} from '../services/binance'
   export default {
     props: ['ticker', 'info'],
+    
     data() {
       return {
         showDropDown: false,
