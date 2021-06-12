@@ -85,12 +85,13 @@ jobs:
           name: dist
           path: dist
           
-      - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2.2
         with:
-          args: deploy --only hosting
+          publish-dir: ./dist
+          production-branch: master
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          FIREBASE_TOKEN: AIzaSyCiPpc1hdw8eZ_RBhT8OUBUu4C-7VA1yas
-          #PROJECT_ID: project-5720784476141069456
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-        #${{ secrets.FIREBASE_TOKEN }}
