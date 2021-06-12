@@ -88,6 +88,6 @@ jobs:
           args: deploy --only hosting
         env:
           FIREBASE_TOKEN: AIzaSyCiPpc1hdw8eZ_RBhT8OUBUu4C-7VA1yas
-          PROJECT_ID: project-5720784476141069456
+          #PROJECT_ID: project-5720784476141069456
 
         #${{ secrets.FIREBASE_TOKEN }}
