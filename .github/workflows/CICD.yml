@@ -16,13 +16,13 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   integration:
+    name: integration
     # A strategy that defines different variations of an environment to run each job in.
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         node: [14]
     # The runners that the job will run on
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -51,16 +51,47 @@ jobs:
         
       - name: Run unit tests
         run: npm run test:unit
-
+        
       - name: Run build
         run: npm run build --if-present
-
+        
       - name: Code coverage
         uses: codecov/codecov-action@v1.0.12
-
-      - name: Deploy to Github pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main'
+        
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          name: dist
+          path: dist
+
+  deployment:
+    name: deployment
+    needs: integration
+    # A strategy that defines different variations of an environment to run each job in.
+    strategy:
+      matrix:
+        node: [14]
+    # The runners that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+        
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: dist
+          path: dist
+          
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2.2
+        with:
+          publish-dir: ./dist
+          production-branch: master
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
