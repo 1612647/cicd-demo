@@ -37,8 +37,8 @@
   import Sparkline from './Sparkline.vue'
   import {unSubscribeSymbol} from '../services/binance'
   export default {
-    props: ['ticker', 'info'],
-    
+    props: ['ticker', 'info1'],
+
     data() {
       return {
         showDropDown: false,
