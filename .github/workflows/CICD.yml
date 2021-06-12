@@ -63,6 +63,14 @@ jobs:
         with:
           name: dist
           path: dist
+          
+      - name: Send Slack notification on failure
+        if: always()
+        uses: pullreminders/slack-action@master
+        with:
+          args: '{\"channel\":\"C024S1JQG77\",\"text\":\"Hello world\"}'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
   deployment:
     name: deployment
