@@ -65,7 +65,7 @@ jobs:
           path: dist
           
       - name: Send Slack notification on failure
-        if: always()
+        if: ${{ job.status}} == failure
         uses: pullreminders/slack-action@master
         with:
           args: '{\"channel\":\"C024S1JQG77\",\"text\":\"Hello world\"}'
