@@ -51,12 +51,12 @@ jobs:
         
       - name: Run unit tests
         run: npm run test:unit
+        
+      - name: Code coverage
+        uses: codecov/codecov-action@v1.0.12
 
       - name: Run build
         run: npm run build --if-present
-
-      - name: Code coverage
-        uses: codecov/codecov-action@v1.0.12
 
       - name: Deploy to Github pages
         uses: peaceiris/actions-gh-pages@v3
