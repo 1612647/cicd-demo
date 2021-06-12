@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils'
 import CurrencyCard from '@/components/CurrencyCard.vue'
 
 describe('CurrencyCard.vue', () => {
-  it('renders props.ticker & props.info when passed', () => {
+  it('renders Feature2', () => {
     const ticker = { price: 1, percent: 10, chg: 100, vol: 1000 }
     const info = { base: '', name: '', quote: '', symbol: '' }
     const wrapper = shallowMount(CurrencyCard, {
